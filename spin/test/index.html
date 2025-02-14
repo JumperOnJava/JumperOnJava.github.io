@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <button id="butt" onclick="document.getElementById('butt').remove()">Start</button>
+    <span id='dbg'>No gyroscope updates</span>
+    <script>
+        let lastAngles = {};
+        let totalRotation = 0;
+        let streak = 0;
+        let lastTime = performance.now();
+        const comboSounds = [
+            { sound: new Audio("comboSound1.mp3"), axis: "alpha" },
+            { sound: new Audio("comboSound2.mp3"), axis: "alpha" },
+            { sound: new Audio("comboSound3.mp3"), axis: "alpha" },
+            { sound: new Audio("comboSound4.mp3"), axis: "alpha" },
+            { sound: new Audio("comboSound5.mp3"), axis: "alpha" },
+            { sound: new Audio("comboSound6.mp3"), axis: "alpha" },
+            { sound: new Audio("comboSound7.mp3"), axis: "alpha" },
+            { sound: new Audio("comboSound8.mp3"), axis: "alpha" }
+        ];
+
+
+        const startGyro = () => {
+            window.addEventListener("deviceorientation", (event) => {
+                let currentTime = performance.now();
+                let deltaTime = (currentTime - lastTime) / 1000;
+
+                if (deltaTime > 0.1) {
+                    lastTime = currentTime;
+                    return;
+                }
+
+                // Select axis based on streak
+                var eventAxis = comboSounds[streak].axis;
+                let currentAngle, lastAngle;
+                currentAngle = event[eventAxis];
+                lastAngle = lastAngles[eventAxis] ?? 0;
+
+
+                let deltaAngle = currentAngle - lastAngle;
+                
+                var lim = eventAxis != "gamma" ? 180 : 90;
+                if (deltaAngle > lim) deltaAngle -= lim*2;
+                if (deltaAngle < -lim) deltaAngle += lim*2;
+                document.getElementById("dbg").innerHTML = `dbg: delta/${deltaAngle} ax/${eventAxis}<br> alpha ${event.alpha}<br>beta ${event.beta}<br>gamma ${event.gamma}`
+
+                totalRotation += deltaAngle;
+
+                if (Math.abs(deltaAngle) < 4) {
+                    totalRotation = 0;
+                    return;
+                }
+
+                if (Math.abs(totalRotation) >= lim*1.7) {
+                    if (Math.abs(deltaAngle) < 10) {
+                        streak = 0;
+                        totalRotation = 0;
+                        return;
+                    }
+                    comboSounds[streak].sound.play();
+                    streak = (streak + 1) % 8;
+                    totalRotation = 0;
+                }
+
+                lastAngles[eventAxis] = currentAngle;
+
+                lastTime = currentTime;
+            });
+        };
+
+        const requestGyroPermission = () => {
+            if (typeof DeviceOrientationEvent.requestPermission === "function") {
+                DeviceOrientationEvent.requestPermission()
+                    .then((state) => {
+                        if (state === "granted") {
+                            startGyro();
+                        } else {
+                            console.warn("Permission denied for gyroscope.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error requesting permission:", error);
+                    });
+            } else {
+                startGyro();
+            }
+        };
+
+
+        document.getElementById("butt").addEventListener("click", requestGyroPermission);
+    </script>
+</body>
+
+</html>

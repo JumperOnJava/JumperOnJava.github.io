@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>Spin Sound</title> -->
+</head>
+
+<body>
+    <button id="butt" onclick="onStart()" style="width: 100px; height: 100px;">Start</button>
+    <!-- <h2>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</h2> -->
+    <!-- <span id="dbg">123</span> -->
+    <br>
+    <br>
+    <video controls src="vid.mp4" id="vid" width="300"></video>
+    <script>
+        function onStart(){
+            document.getElementById('butt').remove();
+            document.getElementById('vid').remove()
+            document.body.innerHTML+=`
+    <div>Spin phone for sound</div>
+            `
+        }
+        let lastAngle = 0;
+        let totalRotation = 0;
+        let lastTime = performance.now();
+        const audio = new Audio('sound.mp3');
+
+        const startGyro = () => {
+            window.addEventListener("deviceorientation", (event) => {
+                let currentAngle = event.alpha;
+                let currentTime = performance.now();
+                let deltaTime = (currentTime - lastTime) / 1000;
+
+                // Prevent processing if too much time has passed
+                if (deltaTime > 0.1) {
+                    lastTime = currentTime;
+                    return;
+                }
+
+                let deltaAngle = currentAngle - lastAngle;
+
+                // Normalize angle differences to be within [-180, 180]
+                if (deltaAngle > 180) deltaAngle -= 360;
+                if (deltaAngle < -180) deltaAngle += 360;
+
+                totalRotation += deltaAngle;
+
+                // Debug output
+                //document.getElementById("dbg").innerText =  `dbg: cur/${currentAngle.toFixed(2)} tot/${totalRotation.toFixed(2)} del/${(deltaAngle / deltaTime).toFixed(2)}`;
+
+                // Reset rotation if the movement is too small
+                if (Math.abs(deltaAngle) < 4) {
+                    totalRotation = 0;
+                    return;
+                }
+
+                // Trigger sound if total rotation exceeds threshold
+                if (Math.abs(totalRotation) >= 300) {
+                    if (Math.abs(deltaAngle) < 10) {
+                        totalRotation = 0;
+                        return;
+                    }
+                    audio.play();
+                    totalRotation = 0;
+
+                    // Optionally add an on-screen message (commented out)
+                    // let element = document.createElement("h3");
+                    // element.innerText = `<spin! ${deltaAngle}>`;
+                    // document.body.appendChild(element);
+                    // setTimeout(() => { element.remove(); }, 10000);
+                }
+
+                lastAngle = currentAngle;
+                lastTime = currentTime;
+            });
+        };
+
+        const requestGyroPermission = () => {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then((state) => {
+                    if (state === 'granted') {
+                        startGyro();
+                    } else {
+                        console.warn('Permission denied for gyroscope.');
+                        //document.getElementById("dbg").innerText = 'Gyroscope permission denied.';
+                    }
+                }).catch((error) => {
+                    console.error('Error requesting permission:', error);
+                    //document.getElementById("dbg").innerText = 'Error requesting permission.';
+                });
+            } else {
+                startGyro(); // Android or older iOS versions
+            }
+        };
+
+        // Call this inside a user interaction event like a button click
+        document.getElementById("butt").addEventListener("click", requestGyroPermission);
+
+    </script>
+</body>
+
+</html>
