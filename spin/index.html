@@ -11,6 +11,8 @@
     <button id="butt" onclick="onStart()" style="width: 100px; height: 100px;">Start</button>
     <!-- <h2>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</h2> -->
     <!-- <span id="dbg">123</span> -->
+    
+    <div id="destroyme">
     <br>
     <br>
     <a href="https://github.com/JumperOnJava/spintrick" style="font-size: 20px; font-family: 'Comic Sans MS', 'Comic Sans', sans-serif;">iOS native version <br>with background playback<br>(source code)</a>
@@ -18,11 +20,14 @@
     <p>Phones destroyed counter: 1</p>
     <br>
     <br>
+    </div>
     <video controls src="vid.mp4" id="vid" width="300"></video>
     <script>
         function onStart(){
             document.getElementById('butt').remove();
             document.getElementById('vid').remove()
+            document.getElementById('destroyme').remove()
+            
             document.body.innerHTML+=`
     <div>Spin phone for sound</div>
             `
