@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #00809D;
+            overflow-x: hidden;
+        }
+
+        .overlay {
+            background: #FCECDD;
+            min-height: 100vh;
+            backdrop-filter: blur(3px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #00809D;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #FF7601;
+            font-weight: 500;
+        }
+
+        .portfolio-section {
+            background: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 128, 157, 0.15);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 128, 157, 0.2);
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00809D, #0090B0);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+     
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .project-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .dropdown-arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background: rgba(252, 236, 221, 0.5);
+        }
+
+        .section-content.active {
+            max-height: 10000px;
+            padding: 2rem;
+        }
+
+        .section-header.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .project-description {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .project-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #FF7601;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 118, 1, 0.3);
+        }
+
+        .project-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 118, 1, 0.4);
+            background: #FF7601;
+        }
+
+        .link-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .tech-stack {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background: #00809D;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .portfolio-section {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .portfolio-section:nth-child(2) { animation-delay: 0.1s; }
+        .portfolio-section:nth-child(3) { animation-delay: 0.2s; }
+        .portfolio-section:nth-child(4) { animation-delay: 0.3s; }
+        .portfolio-section:nth-child(5) { animation-delay: 0.4s; }
+        .portfolio-section:nth-child(6) { animation-delay: 0.5s; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .section-content.active {
+                padding: 1.5rem;
+            }
+
+            .project-links {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .project-link {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="container">
+            <div class="header">
+                <h1>My Portfolio</h1>
+                <p></p>
+            </div>
+
+            <div class="portfolio-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <div class="project-icon">🎮</div>
+                        ElectroCart (Unity)
+                    </div>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="project-description">
+                        My first large project—a video game made for a local school competition. Inspired by the mobile game Bad Piggies, this sandbox game allows players to build vehicle contraptions using various electrical components with the goal of reaching the finish line.
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">
+                            <img src="icons/github.png" alt="GitHub" class="link-icon">
+                            View Code
+                        </a>
+                        <a href="#" class="project-link">
+                            <img src="icons/demo.png" alt="Demo" class="link-icon">
+                            Play Demo
+                        </a>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Unity</span>
+                        <span class="tech-tag">C#</span>
+                        <span class="tech-tag">Game Development</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portfolio-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <div class="project-icon">🚗</div>
+                        RC Car / Raspberry Pi
+                    </div>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="project-description">
+                        A project created for the Hack the FICT Hackathon. Our team developed a remote-controlled car equipped with sensors and a camera. My responsibilities included:
+                        <br><br>
+                        • Engineering the RC control station, which contained all the necessary hardware to communicate with the car<br>
+                        • Developing the station's software to send controls, receive sensor data, and stream video to a phone or laptop<br>
+                        • Creating the car's firmware for the ESP32 microcontroller
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">
+                            <img src="icons/github.png" alt="GitHub" class="link-icon">
+                            Hardware Code
+                        </a>
+                        <a href="#" class="project-link">
+                            <img src="icons/demo.png" alt="Demo" class="link-icon">
+                            View Demo
+                        </a>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Raspberry Pi</span>
+                        <span class="tech-tag">ESP32</span>
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">C++</span>
+                        <span class="tech-tag">IoT</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portfolio-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <div class="project-icon">💬</div>
+                        ChatApp (Internal name)
+                    </div>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="project-description">
+                        A chat application inspired by Discord, with a focus on community features. It includes basic chat functionality, community pages, and an admin blog. Developed in PHP with MySQL, it uses server-side rendering (SSR) enhanced with HTMX for improved responsiveness and is styled with TailwindCSS. Created as part of a university coursework project.
+                    </div>
+                    
+                    <div class="portfolio-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <div class="section-title">
+                                Screenshots
+                            </div>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div class="section-content">
+                            <img style="width: 100%;" src="images/chatapp_blog.png">
+                            <img style="width: 100%;" src="images/chatapp_chat.png">
+                        </div>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">
+                            <img src="icons/github.png" alt="GitHub" class="link-icon">
+                            Source Code
+                        </a>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">PHP</span>
+                        <span class="tech-tag">MySQL</span>
+                        <span class="tech-tag">HTMX</span>
+                        <span class="tech-tag">TailwindCSS</span>
+                        <span class="tech-tag">SSR</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portfolio-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <div class="project-icon">🔐</div>
+                        Password11 Manager
+                    </div>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="project-description">
+                        A secure password manager with a modern interface and optional encrypted synchronization. It allows passwords to be categorized with tags. The application was developed using the WinUI 3 framework in C# to match the modern Windows 11 aesthetic. The sync server was built with ASP.NET and uses PostgreSQL for storage. Developed as a university coursework project.
+                    </div>
+                    <div class="portfolio-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <div class="section-title">
+                                Screenshots
+                            </div>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div class="section-content">
+                            <img style="width: 100%;" src="images/password_home.png">
+                            <img style="width: 100%;" src="images/password_add.png">
+                        </div>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">
+                            <img src="icons/github.png" alt="GitHub" class="link-icon">
+                            Code
+                        </a>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">C#</span>
+                        <span class="tech-tag">WinUI 3</span>
+                        <span class="tech-tag">ASP.NET</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Windows 11</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portfolio-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <div class="project-icon">📱</div>
+                        ManageNEMT Mobile
+                    </div>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="project-description">
+                        A mobile application designed for non-emergency medical transportation (NEMT) drivers. It streamlines workflow by displaying schedules for current and upcoming shifts, providing trip details such as time and addresses, and allowing dispatchers to update information and track drivers in real-time. The app was initially built with raw React Native and later migrated to Expo.
+                        <br><br>
+                        My responsibilities included developing the app, integrating it with the internal dispatcher system and external services (Firebase, Google, Apple), and publishing it to both the App Store and Google Play Store.
+                    </div>
+
+                    <div class="portfolio-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <div class="section-title">
+                                Screenshots
+                            </div>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div class="section-content" >
+                            <div style="margin-top: 24px; margin-bottom: 24px; display: flex; flex-direction: row; width: 100%; justify-content: space-evenly;">
+                                <img style="height: 30rem; display: flex" src="images/NEMT-1.png">
+                                <img style="height: 30rem; display: flex" src="images/NEMT-2.png">
+                                <img style="height: 30rem; display: flex" src="images/NEMT-3.png">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="project-links">
+                        <a href="#" class="project-link">
+                            <img src="icons/app-store.png" alt="App Store" class="link-icon">
+                            App Store
+                        </a>
+                        <a href="#" class="project-link">
+                            <img src="icons/google-play.png" alt="Google Play" class="link-icon">
+                            Google Play
+                        </a>
+                        <a href="#" class="project-link">
+                            <img src="icons/github.png" alt="GitHub" class="link-icon">
+                            View Code
+                        </a>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-tag">React Native</span>
+                        <span class="tech-tag">Expo</span>
+                        <span class="tech-tag">Firebase</span>
+                        <span class="tech-tag">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const isActive = content.classList.contains('active');
+            
+            if (!isActive) {
+                content.classList.add('active');
+                header.classList.add('active');
+            }
+            else{
+                
+                content.classList.remove('active');
+                header.classList.remove('active');
+            }
+        }
+
+        document.querySelectorAll('.portfolio-section').forEach(section => {
+            observer.observe(section);
+        });
+
+    </script>
+</body>
+</html>
