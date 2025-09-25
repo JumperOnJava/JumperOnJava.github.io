@@ -1,474 +1,401 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <title>My Portfolio</title>
+    <!-- https://colorhunt.co/palette/2f524943705797b067e3de61 -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Montserrat", sans-serif;
-        }
-
         body {
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #00809D;
-            overflow-x: hidden;
+            font-family: "Kode Mono", monospace;
+            font-size: large;
+            background-color: #2F5249;
+            color: #E3DE61;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .overlay {
-            background: #FCECDD;
-            min-height: 100vh;
-            backdrop-filter: blur(3px);
+        hr {
+            border-color: #E3DE61
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        a:visited {
+            color: #97B067
+        }
+
+        a:link {
+            color: #97B067
+        }
+
+        a:hover {
+            color: #c9c552
+        }
+
+        button {
+            font-family: "Kode Mono", monospace;
+            font-size: large;
+            font-weight: bold;
+            background-color: #E3DE61;
+            border: 0px solid;
+            color: #2F5249;
+            padding: .25rem;
+        }
+
+        .center-icon {
+            image-rendering: pixelated;
+            aspect-ratio: 1;
+            flex: 1;
+            width: 24px;
+            height: 24px;
+            filter: sepia(93%) saturate(1040%) hue-rotate(354deg) brightness(95%) contrast(87%);
+        }
+
+        .inline {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
+            display: inline;
+            margin: 0;
         }
 
-        .header h1 {
-            font-size: 3rem;
-            color: #00809D;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            color: #FF7601;
-            font-weight: 500;
-        }
-
-        .portfolio-section {
-            background: rgba(255, 255, 255, 0.9);
-            margin-bottom: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0, 128, 157, 0.15);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .portfolio-section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 128, 157, 0.2);
-        }
-
-        .section-header {
-            padding: 1.5rem 2rem;
-            cursor: pointer;
-            background: linear-gradient(135deg, #00809D, #0090B0);
-            color: white;
+        .projectbox {
+            direction: ltr;
+            margin: 5rem 5%;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
-        .section-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
+        .projects {
+            direction: ltr;
+            width: 50%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s ease;
+            overflow-y: scroll;
+            scrollbar-color: #2F5249 #437057;
+            scrollbar-width: thin;
+            flex: 1;
         }
 
-     
-        .section-title {
+        li {
+            list-style: square;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-size: 1.4rem;
-            font-weight: 600;
-            z-index: 1;
+            gap: 6px;
         }
 
-        .project-icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
+        .fullscreen_trigger {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .fullscreen_trigger::after {
+            content: "click to view in fullscreen";
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .fullscreen_trigger:hover::after {
+            opacity: 1;
+        }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            z-index: 9999;
         }
 
-        .dropdown-arrow {
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
-            z-index: 1;
+        #overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
         }
 
-        .section-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.4s ease;
-            background: rgba(252, 236, 221, 0.5);
-        }
-
-        .section-content.active {
-            max-height: 10000px;
-            padding: 2rem;
-        }
-
-        .section-header.active .dropdown-arrow {
-            transform: rotate(180deg);
-        }
-
-        .project-description {
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .project-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: #FF7601;
+        #overlay .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            font-weight: bold;
             color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 118, 1, 0.3);
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            line-height: 1;
         }
 
-        .project-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 118, 1, 0.4);
-            background: #FF7601;
+        .tablerIcon{
+            filter: invert(76%) sepia(10%) saturate(1386%) hue-rotate(39deg) brightness(86%) contrast(90%);
         }
-
-        .link-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        .tech-stack {
-            margin-top: 1rem;
+        a {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .tech-tag {
-            background: #00809D;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .portfolio-section {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .portfolio-section:nth-child(2) { animation-delay: 0.1s; }
-        .portfolio-section:nth-child(3) { animation-delay: 0.2s; }
-        .portfolio-section:nth-child(4) { animation-delay: 0.3s; }
-        .portfolio-section:nth-child(5) { animation-delay: 0.4s; }
-        .portfolio-section:nth-child(6) { animation-delay: 0.5s; }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .section-header {
-                padding: 1rem 1.5rem;
-            }
-
-            .section-title {
-                font-size: 1.2rem;
-            }
-
-            .section-content.active {
-                padding: 1.5rem;
-            }
-
-            .project-links {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .project-link {
-                justify-content: center;
-            }
-        }
+            flex-direction: row;
+            gap: .25rem;
+            margin: 5px 0;
+            
+        }   
     </style>
 </head>
+
 <body>
-    <div class="overlay">
-        <div class="container">
-            <div class="header">
-                <h1>My Portfolio</h1>
-                <p></p>
+    <div id="overlay">
+        <span class="close-btn">[X]</span>
+        <img src="" alt="Fullscreen preview">
+    </div>
+    
+    </div>
+    <div style="display: flex; justify-content: center; flex: 1; height: 100%;">
+        <div class="projects">
+
+            <div style="text-align: center;">
+                <h1 style="flex:0">My Portfolio</h1>
             </div>
 
-            <div class="portfolio-section">
-                <div class="section-header" onclick="toggleSection(this)">
-                    <div class="section-title">
-                        <div class="project-icon">🎮</div>
-                        ElectroCart (Unity)
-                    </div>
-                    <span class="dropdown-arrow">▼</span>
+            <!-- ChatApp -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">ChatApp (Internal name)</h2>
+                    <img class="center-icon" src="icons/chat.png">
                 </div>
-                <div class="section-content">
-                    <div class="project-description">
-                        My first large project—a video game made for a local school competition. Inspired by the mobile game Bad Piggies, this sandbox game allows players to build vehicle contraptions using various electrical components with the goal of reaching the finish line.
+                <div style="display: flex;width: 50%; gap: 5rem;">
+                    <div style="max-width: 50%;">
+                        <p>About:</p>
+                        <p>A chat application inspired by <strong>Discord</strong>, focused on community features.<br>
+                            Includes chat, community pages, and an admin blog.<br>
+                            Developed in <strong>PHP</strong> + <strong>MySQL</strong>, with SSR enhanced by
+                            <strong>HTMX</strong> and styled with <strong>TailwindCSS</strong>. 
+                            Built for a university coursework project.
+                        </p>
                     </div>
-                    <div class="project-links">
-                        <a href="#" class="project-link">
-                            <img src="icons/github.png" alt="GitHub" class="link-icon">
-                            View Code
-                        </a>
-                        <a href="#" class="project-link">
-                            <img src="icons/demo.png" alt="Demo" class="link-icon">
-                            Play Demo
-                        </a>
-                    </div>
-                    <div class="tech-stack">
-                        <span class="tech-tag">Unity</span>
-                        <span class="tech-tag">C#</span>
-                        <span class="tech-tag">Game Development</span>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Links</strong><br>
+                            <a href="https://github.com/JumperOnJava/php_chat_app"><img class="tablerIcon" src="icons/brand-github.svg">Source Code</a>
+                        </p>
+                        <p><strong>Tech Stack</strong><br> PHP <br> MySQL <br> HTMX <br> TailwindCSS <br> SSR</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="portfolio-section">
-                <div class="section-header" onclick="toggleSection(this)">
-                    <div class="section-title">
-                        <div class="project-icon">🚗</div>
-                        RC Car / Raspberry Pi
-                    </div>
-                    <span class="dropdown-arrow">▼</span>
-                </div>
-                <div class="section-content">
-                    <div class="project-description">
-                        A project created for the Hack the FICT Hackathon. Our team developed a remote-controlled car equipped with sensors and a camera. My responsibilities included:
-                        <br><br>
-                        • Engineering the RC control station, which contained all the necessary hardware to communicate with the car<br>
-                        • Developing the station's software to send controls, receive sensor data, and stream video to a phone or laptop<br>
-                        • Creating the car's firmware for the ESP32 microcontroller
-                    </div>
-                    <div class="project-links">
-                        <a href="#" class="project-link">
-                            <img src="icons/github.png" alt="GitHub" class="link-icon">
-                            Hardware Code
-                        </a>
-                        <a href="#" class="project-link">
-                            <img src="icons/demo.png" alt="Demo" class="link-icon">
-                            View Demo
-                        </a>
-                    </div>
-                    <div class="tech-stack">
-                        <span class="tech-tag">Raspberry Pi</span>
-                        <span class="tech-tag">ESP32</span>
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">C++</span>
-                        <span class="tech-tag">IoT</span>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3>Screenshots</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="images/chatapp_blog2.png" alt="Blog" class="wide_image fullscreen_trigger"
+                            height="400">
+                        <img src="images/chatapp_chat.png" alt="Chat" class="wide_image fullscreen_trigger"
+                            height="400">
                     </div>
                 </div>
             </div>
 
-            <div class="portfolio-section">
-                <div class="section-header" onclick="toggleSection(this)">
-                    <div class="section-title">
-                        <div class="project-icon">💬</div>
-                        ChatApp (Internal name)
-                    </div>
-                    <span class="dropdown-arrow">▼</span>
+            <!-- Password Manager -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">Password11 Manager</h2>
+                    <img class="center-icon" src="icons/lock.png">
                 </div>
-                <div class="section-content">
-                    <div class="project-description">
-                        A chat application inspired by Discord, with a focus on community features. It includes basic chat functionality, community pages, and an admin blog. Developed in PHP with MySQL, it uses server-side rendering (SSR) enhanced with HTMX for improved responsiveness and is styled with TailwindCSS. Created as part of a university coursework project.
+                <div style="display: flex;width: 50%; gap: 5rem;">
+                    <div style="max-width: 50%;">
+                        <p>About:</p>
+                        <p>A secure password manager with a modern interface and optional encrypted synchronization.<br>
+                            Allows passwords to be categorized with tags.</p>
+                        Built using <strong>WinUI 3</strong> in C#<br>
+                        Cloud sync server built with
+                        <strong>ASP.NET</strong>&nbsp;+&nbsp;<strong>PostgreSQL</strong><br>
+                        Developed for a university coursework project<br>
                     </div>
-                    
-                    <div class="portfolio-section">
-                        <div class="section-header" onclick="toggleSection(this)">
-                            <div class="section-title">
-                                Screenshots
-                            </div>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
-                        <div class="section-content">
-                            <img style="width: 100%;" src="images/chatapp_blog.png">
-                            <img style="width: 100%;" src="images/chatapp_chat.png">
-                        </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Links</strong><br>
+                            <a href="https://github.com/JumperOnJava/11PasswordManager"><img class="tablerIcon" src="icons/brand-github.svg">Source Code</a>
+                            <a href="https://github.com/JumperOnJava/11PasswordManager/releases/download/1.0/Password11.Manager.zip"><img class="tablerIcon" src="icons/brand-windows.svg">Download</a>
+                        </p>
+                        <p><strong>Tech Stack</strong><br> #C <br> WinUI 3 <br> ASP.NET <br> PostgreSQL <br> Windows 11
+                        </p>
                     </div>
-                    <div class="project-links">
-                        <a href="#" class="project-link">
-                            <img src="icons/github.png" alt="GitHub" class="link-icon">
-                            Source Code
-                        </a>
-                    </div>
-                    <div class="tech-stack">
-                        <span class="tech-tag">PHP</span>
-                        <span class="tech-tag">MySQL</span>
-                        <span class="tech-tag">HTMX</span>
-                        <span class="tech-tag">TailwindCSS</span>
-                        <span class="tech-tag">SSR</span>
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3>Screenshots</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="images/password_home.png" class="fullscreen_trigger" alt="Password Manager Home"
+                            height="400">
+                        <img src="images/password_add.png" class="fullscreen_trigger" alt="Password Add" height="400">
                     </div>
                 </div>
             </div>
 
-            <div class="portfolio-section">
-                <div class="section-header" onclick="toggleSection(this)">
-                    <div class="section-title">
-                        <div class="project-icon">🔐</div>
-                        Password11 Manager
-                    </div>
-                    <span class="dropdown-arrow">▼</span>
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">ManageNEMT Mobile</h2>
+                    <img class="center-icon" src="icons/app.png">
                 </div>
-                <div class="section-content">
-                    <div class="project-description">
-                        A secure password manager with a modern interface and optional encrypted synchronization. It allows passwords to be categorized with tags. The application was developed using the WinUI 3 framework in C# to match the modern Windows 11 aesthetic. The sync server was built with ASP.NET and uses PostgreSQL for storage. Developed as a university coursework project.
+                <div style="display: flex;width: 50%; gap: 5rem;">
+                    <div style="max-width: 50%;">
+                        <p>About:</p>
+                        <p>A mobile app designed for <strong>non-emergency medical transportation (NEMT)</strong>
+                            drivers.</p>
+                        <p><strong>Features:</strong></p>
+                        <ul>
+                            <li>- Displays schedules for current and upcoming shifts</li>
+                            <li>- Shows trip details (time, addresses)</li>
+                            <li>- Real-time dispatcher updates + driver tracking</li>
+                        </ul>
+                        <p>Initially built with raw <strong>React Native</strong>, later migrated to
+                            <strong>Expo</strong>.
+                        </p>
+                        <p><strong>My responsibilities:</strong></p>
+                        <ul>
+                            <li>- Developing and testing the app</li>
+                            <li>- Integrating with dispatcher system + external services (Firebase, Sentry, Google
+                                Maps/Apple Maps)</li>
+                            <li>- Publishing to App Store and Google Play Store</li>
+                        </ul>
                     </div>
-                    <div class="portfolio-section">
-                        <div class="section-header" onclick="toggleSection(this)">
-                            <div class="section-title">
-                                Screenshots
-                            </div>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
-                        <div class="section-content">
-                            <img style="width: 100%;" src="images/password_home.png">
-                            <img style="width: 100%;" src="images/password_add.png">
-                        </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p>
+                            <strong>Links</strong><br>
+                            <a href="https://apps.apple.com/us/app/managenemt-for-drivers/id6741919545"><img class="tablerIcon" src="icons/brand-apple.svg">App Store</a>
+                            <a href="#"><img class="tablerIcon" src="icons/brand-google-play.svg">Google Play</a>
+                            <a href="https://managenemt.com"><img class="tablerIcon" src="icons/world.svg">Company website</a>
+                        </p>
+                        <p><strong>Tech Stack</strong><br> React Native <br> Expo <br> Firebase <br> JavaScript</p>
                     </div>
-                    <div class="project-links">
-                        <a href="#" class="project-link">
-                            <img src="icons/github.png" alt="GitHub" class="link-icon">
-                            Code
-                        </a>
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3>Screenshots</h3>
+                    <div style="display: flex; justify-content: center; gap:1rem">
+                        <img src="images/NEMT-1.png" alt="NEMT 1" class="fullscreen_trigger" height="500">
+                        <img src="images/NEMT-2.png" alt="NEMT 2" class="fullscreen_trigger" height="500">
+                        <img src="images/NEMT-3.png" alt="NEMT 3" class="fullscreen_trigger" height="500">
                     </div>
-                    <div class="tech-stack">
-                        <span class="tech-tag">C#</span>
-                        <span class="tech-tag">WinUI 3</span>
-                        <span class="tech-tag">ASP.NET</span>
-                        <span class="tech-tag">PostgreSQL</span>
-                        <span class="tech-tag">Windows 11</span>
+                </div>
+            </div>
+
+
+            <hr>
+            <br>
+            <br>
+
+            <div style="text-align: center;">
+                <h1 class="header" style="text-align: center;" cl>Side projects</h1>
+            </div>
+
+            <!-- ElectroCart -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">ElectroCart (Unity)</h2>
+                    <img class="center-icon" src="icons/car.png">
+                </div>
+                <div style="display: flex;width: 50%; gap: 5rem;">
+                    <div style="max-width: 50%;">
+                        <p>About:</p>
+                        <p>Video game made for a local competition. Inspired by the mobile
+                            game
+                            Bad Piggies, this sandbox game allows players to build vehicle contraptions using
+                            various electrical components with the goal of reaching the finish line.
+                        </p>
+                    </div>
+                    <div style="width: 50%;  direction: rtl;">
+                        <p><strong>Links</strong><br>
+                            <a href="https://github.com/JumperOnJava/BuilderGame"><img class="tablerIcon" src="icons/brand-github.svg">Source Code</a>
+                            <a
+                                href="https://github.com/JumperOnJava/BuilderGame/releases/download/builds/BuilderGame.rar"><img class="tablerIcon" src="icons/brand-windows.svg">Download
+                                a Demo (Windows)</a>
+                        </p>
+                        <p><strong>Tech Stack</strong><br> Unity <br> #C <br> Game Development</p>
+                    </div>
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3>Screenshots</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="images/buildergame-1.png" alt="BuilderGame 1" height="400"
+                            class="wide_image fullscreen_trigger">
+                        <img src="images/buildergame-2.png" alt="BuilderGame 2" height="400"
+                            class="wide_image fullscreen_trigger">
                     </div>
                 </div>
             </div>
 
-            <div class="portfolio-section">
-                <div class="section-header" onclick="toggleSection(this)">
-                    <div class="section-title">
-                        <div class="project-icon">📱</div>
-                        ManageNEMT Mobile
-                    </div>
-                    <span class="dropdown-arrow">▼</span>
+            <!-- RC Car -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">RC Car with chemical delectors</h2>
+                    <img class="center-icon" src="icons/car.png">
                 </div>
-                <div class="section-content">
-                    <div class="project-description">
-                        A mobile application designed for non-emergency medical transportation (NEMT) drivers. It streamlines workflow by displaying schedules for current and upcoming shifts, providing trip details such as time and addresses, and allowing dispatchers to update information and track drivers in real-time. The app was initially built with raw React Native and later migrated to Expo.
-                        <br><br>
-                        My responsibilities included developing the app, integrating it with the internal dispatcher system and external services (Firebase, Google, Apple), and publishing it to both the App Store and Google Play Store.
+                <div style="display: flex;width: 50%; gap: 5rem;">
+                    <div style="max-width: 50%;">
+                        <p>About:</p>
+                        <p>A project created for the <em>Hack the FICT Hackathon</em>.<br>
+                            Our team developed a remote-controlled car equipped with chemical detectors and a camera for
+                            control.</p>
+                        <p><strong>My responsibilities:</strong></p>
+                        <ul>
+                            <li>- Engineering the RC control station hardware</li>
+                            <li>- Developing station software (controls, sensor data, video streaming)</li>
+                            <li>- Creating firmware for the ESP32 microcontroller</li>
+                        </ul>
                     </div>
-
-                    <div class="portfolio-section">
-                        <div class="section-header" onclick="toggleSection(this)">
-                            <div class="section-title">
-                                Screenshots
-                            </div>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
-                        <div class="section-content" >
-                            <div style="margin-top: 24px; margin-bottom: 24px; display: flex; flex-direction: row; width: 100%; justify-content: space-evenly;">
-                                <img style="height: 30rem; display: flex" src="images/NEMT-1.png">
-                                <img style="height: 30rem; display: flex" src="images/NEMT-2.png">
-                                <img style="height: 30rem; display: flex" src="images/NEMT-3.png">
-                            </div>
-                        </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Links</strong><br>
+                            <a href="https://news.ztu.edu.ua/2025/03/58272/"><img class="tablerIcon" src="icons/world.svg">Article about the hackathon<br>
+                                (Ukrainian)</a><br>
+                        </p>
+                        <p><strong>Tech Stack</strong><br> Raspberry Pi <br> ESP32 <br> ++C <br> Python</p>
                     </div>
-
-
-                    <div class="project-links">
-                        <a href="#" class="project-link">
-                            <img src="icons/app-store.png" alt="App Store" class="link-icon">
-                            App Store
-                        </a>
-                        <a href="#" class="project-link">
-                            <img src="icons/google-play.png" alt="Google Play" class="link-icon">
-                            Google Play
-                        </a>
-                        <a href="#" class="project-link">
-                            <img src="icons/github.png" alt="GitHub" class="link-icon">
-                            View Code
-                        </a>
-                    </div>
-                    <div class="tech-stack">
-                        <span class="tech-tag">React Native</span>
-                        <span class="tech-tag">Expo</span>
-                        <span class="tech-tag">Firebase</span>
-                        <span class="tech-tag">JavaScript</span>
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <h3>Photos</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="images/rc_photo.png" height="400" class="wide_image fullscreen_trigger">
+                        <video src="images/rc_outdoor_demo.mp4" height="400" controls></video>
+                        <img src="images/rc_control_screenshot.jpg" height="400" class="wide_image fullscreen_trigger">
+                        <img src="images/rc_data_screenshot.jpg" height="400" class="wide_image fullscreen_trigger">
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-
+    </div>
     <script>
-        function toggleSection(header) {
-            const content = header.nextElementSibling;
-            const isActive = content.classList.contains('active');
-            
-            if (!isActive) {
-                content.classList.add('active');
-                header.classList.add('active');
-            }
-            else{
-                
-                content.classList.remove('active');
-                header.classList.remove('active');
-            }
-        }
+        const overlay = document.getElementById('overlay');
+        const overlayImg = overlay.querySelector('img');
+        const closeBtn = overlay.querySelector('.close-btn');
 
-        document.querySelectorAll('.portfolio-section').forEach(section => {
-            observer.observe(section);
+        document.querySelectorAll('.fullscreen_trigger').forEach(img => {
+            img.addEventListener('click', () => {
+                overlayImg.src = img.src;
+                overlay.style.display = 'flex';
+            });
         });
 
+        closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            overlayImg.src = '';
+        });
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.style.display = 'none';
+                overlayImg.src = '';
+            }
+        });
     </script>
 </body>
+
 </html>
