@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Typing Trainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            min-height: 500px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .option-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .option-group:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .option-group.active {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .option-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .checkbox-group {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .start-btn {
+            display: block;
+            margin: 30px auto 0;
+            font-size: 20px;
+            padding: 18px 40px;
+        }
+
+        .typing-container {
+            margin-bottom: 30px;
+        }
+
+        .reference-text {
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            min-height: 120px;
+            word-wrap: break-word;
+        }
+
+        .input-text {
+            width: 100%;
+            margin-top: 0;
+            padding: 20px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            min-height: 120px;
+            line-height: 1.6;
+            resize: none;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+            spellcheck: false;
+            autocomplete: off;
+            autocorrect: off;
+            autocapitalize: off;
+        }
+
+        .input-text:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            min-height: 120px;
+            line-height: 1.6;
+            pointer-events: none;
+            z-index: 1;
+            background: white;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        .font-toggle {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .monospace {
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .char {
+            position: relative;
+        }
+
+        .char.incorrect {
+            color: #d32f2f;
+            background-color: rgba(211, 47, 47, 0.2);
+        }
+
+        .char.remaining {
+            color: #bbb;
+        }
+
+        .stats {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            display: inline-block;
+            margin: 0 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat-item {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Setup -->
+        <div id="screen1" class="screen active">
+            <h1>🎯 Typing Trainer</h1>
+            
+            <div class="option-group" data-type="specific">
+                <div class="option-title">
+                    <input type="radio" name="textType" value="specific" id="specificText" checked>
+                    <label for="specificText">Specific Text</label>
+                </div>
+                <textarea id="specificTextInput" placeholder="Enter your custom text here..."></textarea>
+            </div>
+
+            <div class="option-group" data-type="words">
+                <div class="option-title">
+                    <input type="radio" name="textType" value="words" id="randomWords">
+                    <label for="randomWords">Random Words</label>
+                </div>
+                <input type="text" id="wordsInput" placeholder="Enter words separated by spaces (e.g., hello world typing practice)" disabled>
+            </div>
+
+            <div class="option-group" data-type="letters">
+                <div class="option-title">
+                    <input type="radio" name="textType" value="letters" id="randomLetters">
+                    <label for="randomLetters">Random Letters</label>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" name="letterCase" value="random" id="randomCase" checked>
+                        <label for="randomCase">Random Case</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" name="letterCase" value="lower" id="lowerCase">
+                        <label for="lowerCase">Lowercase Only</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" name="letterCase" value="upper" id="upperCase">
+                        <label for="upperCase">Uppercase Only</label>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" name="language" value="en" id="englishLang" checked>
+                        <label for="englishLang">English</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" name="language" value="ua" id="ukrainianLang">
+                        <label for="ukrainianLang">Ukrainian</label>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="includeSymbols">
+                        <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="includeNumbers">
+                        <label for="includeNumbers">Include Numbers (0-9)</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="startTyping()">🚀 Start Typing</button>
+        </div>
+
+        <!-- Screen 2: Typing -->
+        <div id="screen2" class="screen">
+            <h2>✍️ Start Typing!</h2>
+            
+            <div class="font-toggle">
+                <input type="checkbox" id="monospaceFont" class="monospace" checked>
+                <label for="monospaceFont">Use Monospace Font</label>
+            </div>
+
+            <div class="typing-container">
+                <div id="referenceText" class="reference-text monospace"></div>
+                <div class="input-container">
+                    <textarea id="inputText" class="input-text monospace" placeholder="" oninput="checkTyping()" onpaste="return false;"></textarea>
+                    <div id="inputOverlay" class="input-overlay monospace"></div>
+                </div>
+            </div>
+
+            <div class="button-group" style="margin-bottom: 20px;">
+                <button onclick="restartSameTask()">🔄 Restart</button>
+                <button onclick="goToSetup()">⚙️ Back to Setup</button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div id="wpmValue" class="stat-value">0</div>
+                    <div class="stat-label">WPM</div>
+                </div>
+                <div class="stat-item">
+                    <div id="accuracyValue" class="stat-value">100%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div id="timeValue" class="stat-value">0</div>
+                    <div class="stat-label">Time (s)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Results -->
+        <div id="screen3" class="screen">
+            <h2>🎉 Great Job!</h2>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div id="finalWpm" class="stat-value">0</div>
+                    <div class="stat-label">Final WPM</div>
+                </div>
+                <div class="stat-item">
+                    <div id="finalAccuracy" class="stat-value">100%</div>
+                    <div class="stat-label">Final Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div id="finalTime" class="stat-value">0</div>
+                    <div class="stat-label">Total Time (s)</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button onclick="restartSameTask()">🔄 Restart Same Task</button>
+                <button onclick="goToSetup()">⚙️ New Setup</button>
+                <button id="newTextBtn" onclick="restartNewText()" style="display: none;">🎲 New Random Text</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentText = '';
+        let startTime = null;
+        let timer = null;
+        let currentMode = 'specific';
+        let currentSettings = {};
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Radio button change listeners
+            document.querySelectorAll('input[name="textType"]').forEach(radio => {
+                radio.addEventListener('change', updateOptionGroups);
+            });
+
+            // Monospace font toggle
+            document.getElementById('monospaceFont').addEventListener('change', function() {
+                const referenceText = document.getElementById('referenceText');
+                const inputText = document.getElementById('inputText');
+                const inputOverlay = document.getElementById('inputOverlay');
+                if (this.checked) {
+                    referenceText.classList.add('monospace');
+                    inputText.classList.add('monospace');
+                    if (inputOverlay) inputOverlay.classList.add('monospace');
+                } else {
+                    referenceText.classList.remove('monospace');
+                    inputText.classList.remove('monospace');
+                    if (inputOverlay) inputOverlay.classList.remove('monospace');
+                }
+            });
+
+            updateOptionGroups();
+        });
+
+        function updateOptionGroups() {
+            const selectedType = document.querySelector('input[name="textType"]:checked').value;
+            currentMode = selectedType;
+
+            // Enable/disable inputs based on selection
+            document.getElementById('specificTextInput').disabled = selectedType !== 'specific';
+            document.getElementById('wordsInput').disabled = selectedType !== 'words';
+
+            // Update visual states
+            document.querySelectorAll('.option-group').forEach(group => {
+                group.classList.remove('active');
+            });
+            document.querySelector(`[data-type="${selectedType}"]`).classList.add('active');
+        }
+
+        function generateRandomLetters(length = 50) {
+            const language = document.querySelector('input[name="language"]:checked').value;
+            const letterCase = document.querySelector('input[name="letterCase"]:checked').value;
+            const includeSymbols = document.getElementById('includeSymbols').checked;
+            const includeNumbers = document.getElementById('includeNumbers').checked;
+
+            let chars = '';
+            
+            if (language === 'en') {
+                chars = 'abcdefghijklmnopqrstuvwxyz';
+            } else {
+                chars = 'абвгдеєжзиіїйклмнопрстуфхцчшщьюя';
+            }
+
+            if (letterCase === 'upper') {
+                chars = chars.toUpperCase();
+            } else if (letterCase === 'random') {
+                chars = chars + chars.toUpperCase();
+            }
+
+            if (includeNumbers) {
+                chars += '0123456789';
+            }
+
+            if (includeSymbols) {
+                chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            }
+
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+                if (i % 10 === 9 && i < length - 1) result += ' '; // Add spaces every 10 characters
+            }
+
+            return result;
+        }
+
+        function generateRandomWords() {
+            const wordsInput = document.getElementById('wordsInput').value.trim();
+            if (!wordsInput) return '';
+
+            const words = wordsInput.split(' ').filter(word => word.length > 0);
+            if (words.length === 0) return '';
+
+            let result = [];
+            for (let i = 0; i < 20; i++) {
+                result.push(words[Math.floor(Math.random() * words.length)]);
+            }
+
+            return result.join(' ');
+        }
+
+        function startTyping() {
+            currentSettings = {
+                mode: currentMode,
+                specificText: document.getElementById('specificTextInput').value,
+                words: document.getElementById('wordsInput').value,
+                language: document.querySelector('input[name="language"]:checked')?.value || 'en',
+                letterCase: document.querySelector('input[name="letterCase"]:checked')?.value || 'random',
+                includeSymbols: document.getElementById('includeSymbols').checked,
+                includeNumbers: document.getElementById('includeNumbers').checked
+            };
+
+            switch (currentMode) {
+                case 'specific':
+                    currentText = document.getElementById('specificTextInput').value.trim();
+                    if (!currentText) {
+                        alert('Please enter some text to practice with!');
+                        return;
+                    }
+                    break;
+                case 'words':
+                    currentText = generateRandomWords();
+                    if (!currentText) {
+                        alert('Please enter some words to practice with!');
+                        return;
+                    }
+                    break;
+                case 'letters':
+                    currentText = generateRandomLetters();
+                    break;
+            }
+
+            document.getElementById('referenceText').textContent = currentText;
+            document.getElementById('inputText').value = '';
+            
+            // Reset stats
+            startTime = null;
+            updateStats();
+            
+            // Initialize overlay
+            checkTyping();
+            
+            showScreen('screen2');
+            document.getElementById('inputText').focus();
+        }
+
+        function checkTyping() {
+            const input = document.getElementById('inputText').value;
+            const overlay = document.getElementById('inputOverlay');
+            
+            if (!startTime && input.length > 0) {
+                startTime = Date.now();
+                startTimer();
+            }
+
+            // Create overlay text with highlighting
+            let overlayText = '';
+            
+            for (let i = 0; i < currentText.length; i++) {
+                const currentChar = currentText[i];
+                
+                if (i < input.length) {
+                    // Typed character
+                    if (input[i] === currentChar) {
+                        // Correct - show nothing (transparent, let user's text show through)
+                        overlayText += '<span class="char" style="color: transparent;">' + (currentChar === ' ' ? '\u00A0' : currentChar) + '</span>';
+                    } else {
+                        // Incorrect - highlight with red background
+                        overlayText += '<span class="char incorrect">' + (currentChar === ' ' ? '\u00A0' : currentChar) + '</span>';
+                    }
+                } else {
+                    // Not yet typed - show in grey
+                    overlayText += '<span class="char remaining">' + (currentChar === ' ' ? '\u00A0' : currentChar) + '</span>';
+                }
+            }
+            
+            overlay.innerHTML = overlayText;
+            updateStats();
+
+            // Check if finished
+            if (input.length >= currentText.length) {
+                finishTyping();
+            }
+        }
+
+        function updateStats() {
+            const input = document.getElementById('inputText').value;
+            const elapsed = startTime ? (Date.now() - startTime) / 1000 : 0;
+            
+            // Calculate WPM (assuming average word length of 5 characters)
+            const words = input.length / 5;
+            const wpm = elapsed > 0 ? Math.round((words / elapsed) * 60) : 0;
+            
+            // Calculate accuracy
+            let correct = 0;
+            for (let i = 0; i < Math.min(input.length, currentText.length); i++) {
+                if (input[i] === currentText[i]) correct++;
+            }
+            const accuracy = input.length > 0 ? Math.round((correct / input.length) * 100) : 100;
+            
+            document.getElementById('wpmValue').textContent = wpm;
+            document.getElementById('accuracyValue').textContent = accuracy + '%';
+            document.getElementById('timeValue').textContent = Math.round(elapsed);
+        }
+
+        function startTimer() {
+            timer = setInterval(updateStats, 100);
+        }
+
+        function stopTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function finishTyping() {
+            stopTimer();
+            
+            // Copy final stats
+            document.getElementById('finalWpm').textContent = document.getElementById('wpmValue').textContent;
+            document.getElementById('finalAccuracy').textContent = document.getElementById('accuracyValue').textContent;
+            document.getElementById('finalTime').textContent = document.getElementById('timeValue').textContent;
+            
+            // Show/hide appropriate buttons
+            const newTextBtn = document.getElementById('newTextBtn');
+            if (currentMode === 'words' || currentMode === 'letters') {
+                newTextBtn.style.display = 'inline-block';
+            } else {
+                newTextBtn.style.display = 'none';
+            }
+            
+            showScreen('screen3');
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function restartSameTask() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('inputOverlay').innerHTML = '';
+            startTime = null;
+            stopTimer();
+            updateStats();
+            // Trigger initial overlay setup
+            checkTyping();
+            showScreen('screen2');
+            document.getElementById('inputText').focus();
+        }
+
+        function goToSetup() {
+            stopTimer();
+            showScreen('screen1');
+        }
+
+        function restartNewText() {
+            if (currentMode === 'words') {
+                currentText = generateRandomWords();
+            } else if (currentMode === 'letters') {
+                currentText = generateRandomLetters();
+            }
+            
+            document.getElementById('referenceText').textContent = currentText;
+            document.getElementById('inputText').value = '';
+            document.getElementById('inputOverlay').innerHTML = '';
+            startTime = null;
+            stopTimer();
+            updateStats();
+            // Trigger initial overlay setup
+            checkTyping();
+            showScreen('screen2');
+            document.getElementById('inputText').focus();
+        }
+    </script>
+</body>
+</html>
