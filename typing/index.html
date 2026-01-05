@@ -26,7 +26,6 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             padding: 40px;
-            max-width: 800px;
             width: 100%;
             min-height: 500px;
         }
@@ -162,6 +161,9 @@
 
         .typing-container {
             margin-bottom: 30px;
+            display: flex;
+            flex-direction: row;
+            width: 90vw;
         }
 
         .reference-text {
@@ -172,8 +174,9 @@
             font-size: 18px;
             line-height: 1.6;
             margin-bottom: 20px;
-            min-height: 120px;
+            min-height: 50vh;
             word-wrap: break-word;
+            flex:1;
         }
 
         .input-text {
@@ -183,7 +186,7 @@
             font-size: 18px;
             border: 2px solid #ddd;
             border-radius: 10px;
-            min-height: 120px;
+            min-height: 50vh;
             line-height: 1.6;
             resize: none;
             background: transparent;
@@ -201,6 +204,7 @@
         }
 
         .input-container {
+            flex:1;
             position: relative;
         }
 
@@ -239,7 +243,7 @@
         }
 
         .char.incorrect {
-            color: #d32f2f;
+            color: #d32f2f00;
             background-color: rgba(211, 47, 47, 0.2);
         }
 
@@ -308,7 +312,27 @@
                     <input type="radio" name="textType" value="specific" id="specificText" checked>
                     <label for="specificText">Specific Text</label>
                 </div>
-                <textarea id="specificTextInput" placeholder="Enter your custom text here..."></textarea>
+                <textarea id="specificTextInput" placeholder="Enter your custom text here...">
+Садок вишневий коло хати,
+Хрущі над вишнями гудуть,
+Плугатарі з плугами йдуть,
+
+Співають ідучи дівчата,
+А матері вечерять ждуть.
+Сім'я вечеря коло хати,
+
+Вечірня зіронька встає.
+Дочка вечерять подає,
+А мати хоче научати,
+
+Так соловейко не дaє.
+Поклала мати коло хати
+Маленьких діточок своїх;
+
+Сама заснула коло їх.
+Затихло все, тілько дівчата
+Та соловейко не затих.
+                </textarea>
             </div>
 
             <div class="option-group" data-type="words">
@@ -559,7 +583,7 @@
                     break;
             }
 
-            document.getElementById('referenceText').textContent = currentText;
+            document.getElementById('referenceText').innerHTML = currentText.replace(/\n/g,"<br>");
             document.getElementById('inputText').value = '';
             
             // Reset stats
