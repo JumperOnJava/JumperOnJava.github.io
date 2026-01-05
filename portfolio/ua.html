@@ -11,12 +11,14 @@
     <!-- https://colorhunt.co/palette/2f524943705797b067e3de61 -->
     <style>
         body {
-            font-family: "Tektur", monospace;
+            font-family: "Kode Mono", monospace;
             font-size: large;
             background-color: #2F5249;
             color: #E3DE61;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            margin: 0;
             overflow: hidden;
         }
 
@@ -75,14 +77,13 @@
             align-items: center;
         }
 
-        .projects {
+         .projects {
             direction: ltr;
-            width: 50%;
-            height: 100%;
-            overflow-y: scroll;
+            width: 1024px;
+            flex: 1;
+            overflow-y: auto;
             scrollbar-color: #2F5249 #437057;
             scrollbar-width: thin;
-            flex: 1;
         }
 
         li {
