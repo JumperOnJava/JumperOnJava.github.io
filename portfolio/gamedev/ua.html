@@ -1,0 +1,811 @@
+<html>
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap" rel="stylesheet">
+    <title>GameDev — Портфоліо (UA)</title>
+    <!-- https://colorhunt.co/palette/2f524943705797b067e3de61 -->
+    <style>
+        body {
+            font-family: "Kode Mono", monospace;
+            font-size: large;
+            background-color: #2F5249;
+            color: #E3DE61;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        hr {
+            border-color: #E3DE61
+        }
+
+        a:visited {
+            color: #97B067
+        }
+
+        a:link {
+            color: #97B067
+        }
+
+        a:hover {
+            color: #c9c552
+        }
+
+        button {
+            font-family: "Tektur", monospace;
+            font-size: large;
+            font-weight: bold;
+            background-color: #E3DE61;
+            border: 0px solid;
+            color: #2F5249;
+            padding: .25rem;
+        }
+
+        .center-icon {
+            image-rendering: pixelated;
+            aspect-ratio: 1;
+            flex: 1;
+            width: 24px;
+            height: 24px;
+            filter: sepia(93%) saturate(1040%) hue-rotate(354deg) brightness(95%) contrast(87%);
+        }
+
+        .inline {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header {
+            display: inline;
+            margin: 0;
+        }
+
+        .projectbox {
+            direction: ltr;
+            margin: 5rem 5%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .projects {
+            direction: ltr;
+            width: 1024px;
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-color: #2F5249 #437057;
+            scrollbar-width: thin;
+        }
+
+        li {
+            list-style: square;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fullscreen_trigger {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .fullscreen_trigger::after {
+            content: "натисніть для перегляду у повноекранному режимі";
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .fullscreen_trigger:hover::after {
+            opacity: 1;
+        }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        #overlay .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            line-height: 1;
+        }
+
+        .tablerIcon {
+            filter: invert(76%) sepia(10%) saturate(1386%) hue-rotate(39deg) brightness(86%) contrast(90%);
+        }
+
+        .tablerIconInv {
+            filter: invert() invert(76%) sepia(10%) saturate(1386%) hue-rotate(39deg) brightness(86%) contrast(90%);
+        }
+
+        a {
+            display: flex;
+            flex-direction: row;
+            gap: .25rem;
+            margin: 5px 0;
+        }
+
+        #nemt {
+            filter: invert(39%) sepia(26%) saturate(2459%) hue-rotate(280deg) brightness(84%) contrast(82%);
+            ;
+        }
+
+        .project_description {
+            display: flex;
+            width: 90%;
+            max-width: 1024px;
+            gap: 5rem;
+        }
+
+        .screenshot_panel {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            overflow-x: auto;
+        }
+
+        .screenshot_panel > div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .screenshot_panel > h3 {
+            align-self: center;
+        }
+
+        @media (min-width: 768px) {
+            .screenshot_panel {
+                width: 75%;
+            }
+
+            .screenshot_panel > div {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="overlay">
+        <span class="close-btn">[X]</span>
+        <img src="" alt="Попередній перегляд у повноекранному режимі">
+    </div>
+    <div style="display: flex; justify-content: center; flex: 1; height: 100%;">
+        <div class="projects">
+            <div class="projectbox">
+                <div style="display:flex;align-items: center; flex-direction: column; width: 90%; max-width: 1024px;">
+                    <h2>GameDev Портфоліо</h2>
+                    <p>
+                        Ця сторінка містить проекти, пов'язані з розробкою ігор, а також інші пов'язані з
+                        геймдевом проекти.<br>
+                        Тут ви знайдете як повноцінні ігри, так і моди та експерименти.
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+            <br>
+            <br>
+
+            <div style="text-align: center;">
+                <h1 class="header" style="text-align: center;">Ігрові проекти</h1>
+            </div>
+
+            <!-- ElectroCart -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">ElectroCart (Unity)</h2>
+                    <img class="center-icon" src="../icons/car.png">
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Відеогра, створена для місцевого конкурсу. Натхненна мобільною грою Bad Piggies,
+                            ця гра-пісочниця дозволяє гравцям будувати транспортні механізми з
+                            різних електричних компонентів з метою досягнення фінішної лінії.
+                        </p>
+                    </div>
+                    <div style="width: 50%;  direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://github.com/JumperOnJava/BuilderGame"><img class="tablerIcon"
+                                    src="../icons/brand-github.svg">Вихідний код</a>
+                            <a
+                                href="https://github.com/JumperOnJava/BuilderGame/releases/download/builds/BuilderGame.rar"><img
+                                    class="tablerIcon" src="../icons/brand-windows.svg">Завантажити
+                                демо (Windows)</a>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-unity.svg" title="Unity"> Unity <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-c-sharp.svg" title="C#"> C#
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Скріншоти</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="../images/buildergame-1.png" alt="BuilderGame 1" height="400"
+                            class="wide_image fullscreen_trigger">
+                        <img src="../images/buildergame-2.png" alt="BuilderGame 2" height="400"
+                            class="wide_image fullscreen_trigger">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unity Demo: Gravity -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">Демо: Гравітація</h2>
+                    <img class="center-icon" src="../icons/brand-unity.svg">
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Невеличка демка на unity метою якої було створення системи яка дозволяє вказувати
+                            кастомну гравітацію для гравця.<br>
+                            Метою створення демки було моє бажання краще опанувати матричну математику та кватерніони
+                            в контексті розробки відеоігор.</p>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://www.youtube.com/watch?v=wYEQ2dIK6d0"><img class="tablerIcon"
+                                    src="../icons/world.svg">Демо на YouTube</a>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-unity.svg" title="Unity"> Unity <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-c-sharp.svg" title="C#"> C#
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Демо</h3>
+                    <div style="display: flex; justify-content: center;">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/wYEQ2dIK6d0"
+                            title="Демо: Гравітація" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- StormCamp -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">StormCamp</h2>
+                    <img class="center-icon" src="../icons/device-gamepad.svg">
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Ви вирішили вирушити в зимовий похід, але раптом розігралася снігова буря, тож тепер вам
+                            доведеться виживати в дикій природі кілька днів, доки буря не вщухне.</p>
+                        <p>Оскільки ця гра була створена в поспіху для <strong>MicroJam 52</strong>, у ній є деякі
+                            недоробки, зокрема система завдань, яку я не встиг доопрацювати вчасно, тому виконані
+                            завдання не відображаються.</p>
+                        <p>Ассети та графіка були створені моєю онлайн подругою</p>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://javajumper.itch.io/stormcamp"><img class="tablerIcon"
+                                    src="../icons/world.svg">Гра на itch.io</a>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-unity.svg" title="Unity"> Unity <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-c-sharp.svg" title="C#"> C#
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Скріншоти</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="../images/sc_1.png" alt="StormCamp 1" height="400" class="fullscreen_trigger">
+                        <img src="../images/sc_2.png" alt="StormCamp 2" height="400" class="fullscreen_trigger">
+                        <img src="../images/sc_3.png" alt="StormCamp 3" height="400" class="fullscreen_trigger">
+                        <img src="../images/sc_4.png" alt="StormCamp 4" height="400" class="fullscreen_trigger">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modding -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">Моддинг Minecraft</h2>
+                    <!-- <img class="center-icon" src=""> -->
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Іноді, коли у мене є вільний час, я розробляю моди для Minecraft. <br>
+                            Я зосереджуюся переважно на невеликих покращеннях для покращення досвіду гравця або
+                            функціях, які можна
+                            реалізувати виключно на клієнті гри без модифікації сервера<br>
+                            Я також приймав участь в розробці багатьох інших модів. За три роки мої моди накопичили
+                            понад два мільйони завантажень на різних платформах </p>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://www.curseforge.com/members/jumperonjava/projects"><img class="tablerIcon"
+                                    src="../icons/world.svg">Curseforge<br></a>
+                            <a href="https://modrinth.com/user/JavaJumper"><img class="tablerIcon"
+                                    src="../icons/world.svg">Modrinth<br></a>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-java.svg" title="Java"> Java <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="Fabric"> Fabric <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="Spongepowered Mixin"> Spongepowered
+                            Mixin
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Скріншоти</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <img src="../images/mod_cursor.png" height="400" class="wide_image fullscreen_trigger">
+                            <span>Налаштовуваний курсор</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <img src="../images/mod_wheel.png" height="400" width="400"
+                                class="wide_image fullscreen_trigger" style="object-fit: contain;">
+                            <span>Колесо дій</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Робота з шейдерами</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <video src="../images/mod_shader_void.mp4" height="400" controls autoplay muted loop playsinline></video>
+                            <span>Демо шейдер: void</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <img src="../images/mod_shader.png" height="400" class="wide_image fullscreen_trigger">
+                            <span>Простий шейдер-пак зі стилізованим туманом та тінями</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <hr>
+            <br>
+            <br>
+
+            <div style="text-align: center;">
+                <h1 class="header" style="text-align: center;">Інше</h1>
+            </div>
+
+            <!-- Blender / 3D -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">Досвід з Blender / 3D</h2>
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Я б не назвав себе професіоналом в Blender, але мого досвіду має бути достатньо для створення плейсхолдерів, нескладних ассетів, редагування і оптимізації існуючих моделей</p>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <!-- <p><strong>Посилання</strong><br>
+                            <a href="https://www.youtube.com/watch?v=bbgLaalLHEw"><img class="tablerIcon"
+                                    src="../icons/world.svg">Тизер/заставка для студентського фільму</a>
+                            <a href="https://www.youtube.com/watch?v=u1i2zp3Z1cI"><img class="tablerIcon"
+                                    src="../icons/world.svg">Minecraft пародія на заставку Arcane</a>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="Blender"> Blender <br>
+                        </div>
+                        </p> -->
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Тизер/заставка для студентського фільму</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <iframe width="978" height="550" src="https://www.youtube.com/embed/bbgLaalLHEw"
+                            title="Тизер/заставка для студентського фільму" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Minecraft пародія на заставку Arcane</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <iframe width="978" height="550" src="https://www.youtube.com/embed/u1i2zp3Z1cI"
+                            title="Minecraft пародія на заставку Arcane" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>3D модель антропоморфного лиса</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="../images/3d_fox_1.png" alt="3D лис 1" height="400" class="fullscreen_trigger">
+                        <img src="../images/3d_fox_2.png" alt="3D лис 2" height="400" class="fullscreen_trigger">
+                        <video src="../images/3d_fox.mp4" height="400" controls autoplay muted loop playsinline></video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HelpPress -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">HelpPress — портативна кнопка спасіння</h2>
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Проєкт, розроблений для хакатону Future in Action від Noosphere Engineering School.<br>
+                            Це пристрій для екстреного оповіщення та визначення координат.
+                            При натисканні кнопки здійснюється SMS-розсилка екстреного повідомлення з посиланням на
+                            Google Maps на заздалегідь налаштовані номери, а також активується звукове оповіщення.
+                            Початкове налаштування списку контактів виконується через веб-інтерфейс по Wi-Fi.</p>
+                        <p><strong>Мої обов'язки:</strong></p>
+                        <ul>
+                            <li>- Проектування системи живлення/зарядки</li>
+                            <li>- 3D моделювання корпусу</li>
+                            <li>- Менторство команди в інших технічних рішеннях</li>
+                        </ul>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://hackathon.noosphereengineering.com/"><img class="tablerIcon"
+                                    src="../icons/world.svg">Сторінка хакатону<br>
+                            </a><br>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/cpu.svg" title="ESP8266"> ESP8266 <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIconInv" src="../icons/brand-cpp.svg" title="C / C++"> C / CPP <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-javascript.svg" title="JavaScript"> JavaScript
+                            <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="HTML5"> HTML <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="CSS3"> CSS3
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3 style="text-align: left;">Фотографії та скріншоти</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="../images/hp_3d.png" height="400" class="wide_image fullscreen_trigger">
+                        <img src="../images/hp_real.png" height="400" class="wide_image fullscreen_trigger">
+                        <img src="../images/hp_ui.png" height="400" class="wide_image fullscreen_trigger">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Manager -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">Password11 Manager</h2>
+                    <img class="center-icon" src="../icons/lock.png">
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Безпечний менеджер паролів з сучасним інтерфейсом та опціональною зашифрованою
+                            синхронізацією.<br>
+                            Дозволяє категоризувати паролі за тегами.</p>
+                        Побудований з використанням <strong>WinUI 3</strong> на C#<br>
+                        Сервер синхронізації побудований на
+                        <strong>ASP.NET</strong>&nbsp;+&nbsp;<strong>PostgreSQL</strong><br>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://github.com/JumperOnJava/11PasswordManager"><img class="tablerIcon"
+                                    src="../icons/brand-github.svg">Код додатку</a>
+                            <a
+                                href="https://github.com/JumperOnJava/11PasswordManager/releases/download/1.0/Password11.Manager.zip"><img
+                                    class="tablerIcon" src="../icons/brand-windows.svg">Завантажити</a>
+                        </p>
+                        <p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-c-sharp.svg" title="C#"> C# <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-windows.svg" title="WinUI 3"> WinUI 3 <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="ASP.NET"> ASP.NET <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-postgres.svg" title="PostgreSQL"> PostgreSQL
+                            <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-windows.svg" title="Windows 11"> Windows 11
+                        </div>
+                        </p>
+
+                        </p>
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Скріншоти</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="../images/password_home.png" class="fullscreen_trigger"
+                            alt="Головна сторінка менеджера паролів" height="400">
+                        <img src="../images/password_add.png" class="fullscreen_trigger" alt="Додавання пароля"
+                            height="400">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ManageNEMT Mobile -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">ManageNEMT Mobile</h2>
+                    <img class="center-icon" src="../icons/app.png">
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Мобільний додаток, розроблений для водіїв служб <strong>неекстреного медичного
+                                транспортрування (NEMT)</strong>.</p>
+                        <p><strong>Функції:</strong></p>
+                        <ul>
+                            <li>- Відображає розклади поточних та майбутніх змін</li>
+                            <li>- Показує деталі поїздок (час, адреса підбору і вистадки)</li>
+                            <li>- Оновлення даних в реальному часі + відстеження водія для диспетчерської системи</li>
+                        </ul>
+                        <p>Спочатку побудований на звичайному <strong>React Native</strong>, пізніше мігрований на
+                            <strong>Expo</strong>.
+                        </p>
+                        <p><strong>Мої обов'язки в проекті:</strong></p>
+                        <ul>
+                            <li>- Розробка та тестування додатку</li>
+                            <li>- Інтеграція з внутрішньою диспетчерською системою + зовнішніми сервісами (Firebase
+                                Cloud
+                                Messaging, Sentry, Google
+                                Maps/Apple Maps)</li>
+                            <li>- Публікація в App Store та Google Play Store</li>
+                        </ul>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p>
+                            <strong>Посилання</strong><br>
+                            <a href="https://apps.apple.com/us/app/managenemt-for-drivers/id6741919545"><img
+                                    class="tablerIcon" src="../icons/brand-apple.svg">App Store</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.managenemt.mobile.driver"><img
+                                    class="tablerIcon" src="../icons/brand-google-play.svg">Google Play</a>
+                            <a href="https://managenemt.com"><img class="tablerIcon" src="../icons/world.svg">Веб-сайт
+                                компанії</a>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-react-native.svg" title="React Native"> React
+                            Native <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="Expo"> Expo <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-firebase.svg" title="Firebase"> Firebase <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-typescript.svg" title="TypeScript">
+                            TypeScript
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Скріншоти</h3>
+                    <div style="display: flex; justify-content: center; gap:1rem">
+                        <img src="../images/NEMT-1.png" alt="NEMT 1" class="fullscreen_trigger" height="500">
+                        <img src="../images/NEMT-2.png" alt="NEMT 2" class="fullscreen_trigger" height="500">
+                        <img src="../images/NEMT-3.png" alt="NEMT 3" class="fullscreen_trigger" height="500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- RC Car -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">RC автомобіль з детекторами хімічних сполук</h2>
+                    <img class="center-icon" src="../icons/car.png">
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Проект, створений для університетського хакатону <em>Hack the FICT</em>.<br>
+                            Наша команда розробила радіокерований автомобіль, обладнаний камерою для
+                            управління та детекторами різних хімічних сполук, таких як CO2/NH3/спирт та інших показників
+                            як температура та вологість.</p>
+                        <p><strong>Мої обов'язки:</strong></p>
+                        <ul>
+                            <li>- Проектування електроніки в станції управління</li>
+                            <li>- Розробка програмного забезпечення станції (управління, отримання і обробка
+                                відеосигналу та даних з датчиків)</li>
+                            <li>- Створення прошивки для мікроконтролера ESP32</li>
+                        </ul>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://news.ztu.edu.ua/2025/03/58272/"><img class="tablerIcon"
+                                    src="../icons/world.svg">Стаття про хакатон<br>
+                                (українською)</a><br>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIconInv" src="../icons/cpu-2.svg" title="Raspberry Pi"> Raspberry Pi
+                            <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/cpu.svg" title="ESP32"> ESP32 <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIconInv" src="../icons/brand-cpp.svg" title="C++"> C++ <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-python.svg" title="Python"> Python
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Фотографії</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="../images/rc_photo.png" height="400" class="wide_image fullscreen_trigger">
+                        <video src="../images/rc_outdoor_demo.mp4" height="400" controls autoplay muted loop playsinline></video>
+                        <img src="../images/rc_control_screenshot.jpg" height="400"
+                            class="wide_image fullscreen_trigger">
+                        <img src="../images/rc_data_screenshot.jpg" height="400" class="wide_image fullscreen_trigger">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ChatApp -->
+            <div class="projectbox">
+                <div class="inline">
+                    <h2 class="header">ChatApp (Тимчасова назва)</h2>
+                    <img class="center-icon" src="../icons/chat.png">
+                </div>
+                <div class="project_description">
+                    <div style="max-width: 50%;">
+                        <p>Опис:</p>
+                        <p>Додаток для чату, натхненний додатком <strong>Discord</strong>, але зосереджений на функціях
+                            для спільнот.<br>
+                            Включає чат, сторінки спільноти та блог адміністратора.<br>
+                            Розроблений на <strong>PHP</strong> + <strong>MySQL</strong>, з SSR покращеним
+                            <strong>HTMX</strong> та стилізованим <strong>TailwindCSS</strong>.
+                            Побудований для університетського курсового проекту.
+                        </p>
+                    </div>
+                    <div style="width: 50%; direction: rtl;">
+                        <p><strong>Посилання</strong><br>
+                            <a href="https://github.com/JumperOnJava/php_chat_app"><img class="tablerIcon"
+                                    src="../icons/brand-github.svg">Код додатку</a>
+                        </p>
+                        <p><strong>Технологічний стек</strong><br>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-php.svg" title="PHP"> PHP <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-mysql.svg" title="MySQL"> MySQL <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/world.svg" title="HTMX"> HTMX <br>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <img class="tablerIcon" src="../icons/brand-tailwind.svg" title="TailwindCSS"> TailwindCSS
+                        </div>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="screenshot_panel">
+                    <h3>Скріншоти</h3>
+                    <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+                        <img src="../images/chatapp_blog2.png" alt="Блог" class="wide_image fullscreen_trigger"
+                            height="400">
+                        <img src="../images/chatapp_chat.png" alt="Чат" class="wide_image fullscreen_trigger"
+                            height="400">
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <script>
+        const overlay = document.getElementById('overlay');
+        const overlayImg = overlay.querySelector('img');
+        const closeBtn = overlay.querySelector('.close-btn');
+
+        document.querySelectorAll('.fullscreen_trigger').forEach(img => {
+            img.addEventListener('click', () => {
+                overlayImg.src = img.src;
+                overlay.style.display = 'flex';
+            });
+        });
+
+        closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            overlayImg.src = '';
+        });
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.style.display = 'none';
+                overlayImg.src = '';
+            }
+        });
+    </script>
+</body>
+
+</html>
